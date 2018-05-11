@@ -10,5 +10,12 @@ namespace ParkingEmulatorTask
 
         public decimal WrittenOffMoney { get; set; }
 
+        public Transaction(int carId, decimal fee)
+        {
+            CarId = carId;
+            WrittenOffMoney = fee;
+            TransactionTime = DateTime.Now;
+        }
+
     }
 }

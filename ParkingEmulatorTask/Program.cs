@@ -11,12 +11,8 @@ namespace ParkingEmulatorTask
         static void Main(string[] args)
         {
             Parking parking = Parking.Instance;
-            //Settings.ParkingCustomization();
-                        
-            parking.AddCar();
+            
 
-
-            parking.DeleteCar(parking.Cars.First().Id);
             Console.ReadKey();
         }
     }

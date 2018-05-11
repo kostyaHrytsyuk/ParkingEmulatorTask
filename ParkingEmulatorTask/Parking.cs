@@ -18,6 +18,10 @@ namespace ParkingEmulatorTask
             Console.WriteLine("Hello!\nLet's create a parking");
             Thread.Sleep(1200);
             Settings.ParkingCustomization();
+
+            var auto = new AutoResetEvent(false);
+            TimerCallback callback = new TimerCallback(ChargeFee);
+            Timer timer = new Timer(ChargeFee, auto, Settings.Timeout, Settings.Timeout);
         }
 
         #endregion
@@ -139,6 +143,20 @@ namespace ParkingEmulatorTask
             var carDel = Cars.Where(item => item.Id == carId);
             Cars.Remove(carDel.First());
         }
+
+        #endregion
+
+        #region Charging fees
+
+        private void ChargeFee(object stateInfo)
+        {
+            foreach (var car in cars)
+            {
+                var transaction = new Transaction(car.Id, Settings.PriceSet[car.CarType]);
+                Transactions.Add(transaction);
+            }
+        }
+
 
         #endregion
     }
