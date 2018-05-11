@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace ParkingEmulatorTask
 {
@@ -11,7 +12,12 @@ namespace ParkingEmulatorTask
 
         public static Parking Instance { get { return lazyInstance.Value; } }
 
-        private Parking() { }
+        private Parking()
+        {
+            Console.WriteLine("Hello!\nLet's create a parking");
+            Thread.Sleep(1200);
+            Settings.ParkingCustomization();
+        }
 
         #endregion
         
