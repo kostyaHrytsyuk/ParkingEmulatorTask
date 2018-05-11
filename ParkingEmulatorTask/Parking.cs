@@ -24,8 +24,11 @@ namespace ParkingEmulatorTask
 
         #region Properties
         private List<Car> cars = new List<Car>();
+        private static List<int> carIds = new List<int>();
 
         public List<Car> Cars { get { return cars; } }
+
+        public static List<int> CarsIds { get { return carIds; } }
 
         public List<Transaction> Transactions { get; set; }
 
@@ -56,7 +59,7 @@ namespace ParkingEmulatorTask
             var car = new Car(firstPayment, carType);
 
             cars.Add(car);
-
+            carIds.Add(car.Id);
             Console.WriteLine($"Vehicle {car.CarType} with Id {car.Id} was added to parking");            
         }
 
@@ -127,6 +130,16 @@ namespace ParkingEmulatorTask
 
             return carType;
         }
+        #endregion
+
+        #region Car Deletion
+
+        public void DeleteCar(int carId)
+        {
+            var carDel = Cars.Where(item => item.Id == carId);
+            Cars.Remove(carDel.First());
+        }
+
         #endregion
     }
 }

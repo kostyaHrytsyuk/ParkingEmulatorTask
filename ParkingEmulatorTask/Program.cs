@@ -15,6 +15,8 @@ namespace ParkingEmulatorTask
                         
             parking.AddCar();
 
+
+            parking.DeleteCar(parking.Cars.First().Id);
             Console.ReadKey();
         }
     }
