@@ -9,7 +9,17 @@ namespace ParkingEmulatorTask
 {
     static class Settings
     {
-        private static TimeSpan Timeout { get; set; } = new TimeSpan(0,0,3);
+        #region Properties
+        private static TimeSpan timeout = new TimeSpan(0, 0, 3);
+        private static int parkingSpace = 50;
+        private static double fine = 0.03;
+
+        public static TimeSpan Timeout { get { return timeout; } }
+
+        public static int ParkingSpace { get { return parkingSpace; } }
+
+        public static double Fine      { get { return fine; } }
+        #endregion
 
         public static Dictionary<CarType, decimal> PriceSet => new Dictionary<CarType, decimal>()
         {
@@ -17,12 +27,8 @@ namespace ParkingEmulatorTask
            , { CarType.Truck, 10.00m }
            , { CarType.Bus, 5.00m}
            , { CarType.Motorcycle,1.50m}
+
         };
-
-        private static int ParkingSpace { get; set; } = 50;
-
-        private static double Fine { get; set; } = 0.03;
-
         private static bool IsCustomized { get; set; } = false;
 
         public static void ParkingCustomization()
@@ -41,12 +47,13 @@ namespace ParkingEmulatorTask
                 
                 Console.WriteLine("\nIf you want to create a parking with these settings enter C.");
                 Console.WriteLine("If you want to change value of settings enter next symbols");
-                Console.WriteLine("P - for Parking space. Entered value must be less than 1000 ");
+                Console.WriteLine("P - for Parking space. Entered value must be less than 900 ");
                 Console.WriteLine("T - for Charging time. Enter value in seconds");
                 Console.WriteLine("F - for Fine. Enter value in percents");
                 Console.Write("Enter symbol: ");
 
-                var propFirstLetter = Console.ReadLine().First();
+                var propFirstLetter = Console.ReadKey().Key.ToString().First();
+                Console.WriteLine();
 
                 switch (propFirstLetter)
                 {
@@ -56,7 +63,7 @@ namespace ParkingEmulatorTask
                         SettingsPropertiesModificator(propFirstLetter);
                         break;
                     case 'C':
-                        Console.WriteLine("Created");
+                        Console.WriteLine("Parking created!");
                         break;
                     default:
                         Console.WriteLine("You entered a wrong value!");
@@ -64,7 +71,8 @@ namespace ParkingEmulatorTask
                         break;
                 }
             }
-
+            Thread.Sleep(1500);
+            Console.Clear();
             IsCustomized = true;
         }
 
@@ -79,9 +87,9 @@ namespace ParkingEmulatorTask
                 switch (propFirstLetter)
                 {
                     case 'P':
-                        if (newValue < 1000)
+                        if (newValue < 900)
                         {
-                            ParkingSpace = (int) newValue;
+                            parkingSpace = (int) newValue;
                             Console.WriteLine("Parking Space value was changed!");
                         }
                         else
@@ -91,12 +99,12 @@ namespace ParkingEmulatorTask
                         ParkingCustomization();
                         break;
                     case 'T':
-                        Timeout = new TimeSpan(0, 0, (int) newValue);
+                        timeout = new TimeSpan(0, 0, (int) newValue);
                         Console.WriteLine("Timeout value was changed!");
                         ParkingCustomization();
                         break;
                     case 'F':
-                        Fine = (double)newValue / 100;
+                        fine = (double)newValue / 100;
                         Console.WriteLine("Fine value was changed!");
                         ParkingCustomization();
                         break;

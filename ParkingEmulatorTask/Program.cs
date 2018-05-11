@@ -12,6 +12,8 @@ namespace ParkingEmulatorTask
         {
             Parking parking = Parking.Instance;
             //Settings.ParkingCustomization();
+                        
+            parking.AddCar();
 
             Console.ReadKey();
         }
