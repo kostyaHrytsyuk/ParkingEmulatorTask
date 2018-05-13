@@ -7,7 +7,9 @@ namespace ParkingEmulatorTask
         static void Main(string[] args)
         {
             Parking parking = Parking.Instance;
-            
+
+           
+
             Console.ReadKey();
         }
     }

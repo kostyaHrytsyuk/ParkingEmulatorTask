@@ -31,19 +31,12 @@ namespace ParkingEmulatorTask
         #region Properties
         private List<Car> cars = new List<Car>();
         private static List<int> carIds = new List<int>();
-        private static double passiveBalance { get; set; }
-        private static double activeBalance { get; set; }
         private List<Transaction> transactions = new List<Transaction>();
 
-        public static double PassiveBalance { get { return passiveBalance; } }
-        public static double ActiveBalance  { get { return activeBalance;  } }
-
         public List<Car> Cars { get { return cars; } }
-
         public static List<int> CarsIds { get { return carIds; } }
-
-
-        
+        public static double PassiveBalance { get; set; }
+        public static double ActiveBalance  { get; set; } 
         #endregion
 
         public void GetFreeParkingSpace()
@@ -60,7 +53,18 @@ namespace ParkingEmulatorTask
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        //Car Addition
+        public void GetAllCars()
+        {
+            Console.WriteLine("CarId\tWritten Off Money\tTransaction Time");
+
+            foreach (var car in cars)
+            {
+                Console.WriteLine(car.Id + "\t" + car.CarType + "\t\t\t" + car.Balance.ToString("F"));
+
+                Console.WriteLine($"{car.Id}\t");
+            }
+        }
+        
         public void AddCar()
         {
             var firstPayment = Menu.InputedBalanceValidation();
@@ -76,14 +80,32 @@ namespace ParkingEmulatorTask
             Console.Clear();            
         }        
         
-        //Car Deletion
         public void DeleteCar(int carId)
         {
-            var carDel = Cars.Where(item => item.Id == carId);
-            Cars.Remove(carDel.First());
-        }               
+            var carDel = Cars.Find(item => item.Id == carId);
 
-        //Charging fees
+            if (carDel == null)
+            {
+                Console.WriteLine($"There is no car with such {carId} on the parking");
+            }
+            else
+            {
+                if (carDel.Balance < 0)
+                {
+                    Menu.CarBalanceRefilling(carDel);
+                    DeleteCar(carId);
+                }
+                else
+                {
+                    Cars.Remove(carDel);
+                    Console.WriteLine("Now you can take your car from the parking\nHave a nice day!");
+                    Thread.Sleep(2000);
+                }
+            }
+
+            Console.Clear();
+        }               
+                
         private void ChargeFee(object stateInfo)
         {
             foreach (var car in cars)
@@ -93,18 +115,16 @@ namespace ParkingEmulatorTask
                 {
                     feeSize += feeSize*Settings.Fine;
                     car.Balance -= feeSize;
-                    activeBalance += feeSize;
+                    ActiveBalance += feeSize;
                 }
                 else
                 {
                     car.Balance -= feeSize;
-                    passiveBalance += feeSize;
+                    PassiveBalance += feeSize;
                 }                
 
                 var transaction = new Transaction(car.Id, feeSize);
-                transactions.Add(transaction);
-
-                Console.WriteLine("Fees charged!");
+                transactions.Add(transaction);                
             }
         }                
     }

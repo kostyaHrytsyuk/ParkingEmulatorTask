@@ -32,7 +32,8 @@ namespace ParkingEmulatorTask
 
             using (StreamWriter writer = new StreamWriter("./Transactions.log",true))
             {
-                writer.WriteLine(CarId + "\t" + WrittenOffMoney.ToString("F") + "\t\t\t" + TransactionTime + "\n");
+                writer.WriteLine(CarId + "\t" + WrittenOffMoney.ToString("F") + "\t\t\t" + TransactionTime);
+                writer.WriteLine();
             }
         }
     }

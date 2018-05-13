@@ -101,7 +101,7 @@ namespace ParkingEmulatorTask
         #region Car Addition
         public static double InputedBalanceValidation()
         {
-            Console.WriteLine("Input your first payment");
+            Console.WriteLine("Input your payment");
             double firstPayment;
             var inputValue = Console.ReadLine();
 
@@ -167,6 +167,16 @@ namespace ParkingEmulatorTask
             return carType;
         }
         #endregion
+
+        //Car Deletion
+        public static void CarBalanceRefilling(Car car)
+        {
+            Console.WriteLine($"To take car {car.Id} from parking, insert {-car.Balance}");
+            double fine = InputedBalanceValidation();
+            car.Balance += fine;
+            Parking.ActiveBalance -= fine;
+            Parking.PassiveBalance += fine;            
+        }
 
         public static void GetParkingBalance()
         {
