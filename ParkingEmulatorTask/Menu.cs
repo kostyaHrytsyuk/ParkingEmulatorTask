@@ -171,5 +171,28 @@ namespace ParkingEmulatorTask
         }
         #endregion
 
+        public static void GetParkingBalance()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("Parking balance\t");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("Passive balance\t");
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Active balance");
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write($"{Parking.ActiveBalance + Parking.PassiveBalance}\t\t");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"{Parking.PassiveBalance}\t\t");
+                        
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(Parking.ActiveBalance);
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
     }
 }

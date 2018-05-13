@@ -31,14 +31,17 @@ namespace ParkingEmulatorTask
         #region Properties
         private List<Car> cars = new List<Car>();
         private static List<int> carIds = new List<int>();
-        private double passiveBalance { get; set; }
-        private double activeBalance { get; set; }
+        private static double passiveBalance { get; set; }
+        private static double activeBalance { get; set; }
+        
+        public static double PassiveBalance { get { return passiveBalance; } }
+        public static double ActiveBalance  { get { return activeBalance;  } }
 
         public List<Car> Cars { get { return cars; } }
 
         public static List<int> CarsIds { get { return carIds; } }
 
-        public List<Transaction> Transactions { get; set; }
+        public List<Transaction> Transactions { get; set; } = new List<Transaction>();
 
         
         #endregion
@@ -83,14 +86,24 @@ namespace ParkingEmulatorTask
         {
             foreach (var car in cars)
             {
-                
+                double feeSize = Settings.PriceSet[car.CarType];
+                if (car.Balance < Settings.PriceSet[car.CarType])
+                {
+                    feeSize += feeSize*Settings.Fine;
+                    car.Balance -= feeSize;
+                    activeBalance += feeSize;
+                }
+                else
+                {
+                    car.Balance -= feeSize;
+                    passiveBalance += feeSize;
+                }                
 
-                var transaction = new Transaction(car.Id, Settings.PriceSet[car.CarType]);
+                var transaction = new Transaction(car.Id, feeSize);
                 Transactions.Add(transaction);
-                
+
                 Console.WriteLine("Fees charged!");
             }
-        }
-                
+        }                
     }
 }
