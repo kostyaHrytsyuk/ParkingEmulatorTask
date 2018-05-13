@@ -13,22 +13,26 @@ namespace ParkingEmulatorTask
 
         public static Parking Instance { get { return lazyInstance.Value; } }
 
+        Timer timer;
+
         private Parking()
         {
             Console.WriteLine("Hello!\nLet's create a parking");
             Thread.Sleep(1200);
-            Settings.ParkingCustomization();
+            Menu.ParkingCustomization();
 
             var auto = new AutoResetEvent(false);
             TimerCallback callback = new TimerCallback(ChargeFee);
-            Timer timer = new Timer(ChargeFee, auto, Settings.Timeout, Settings.Timeout);
+            timer = new Timer(ChargeFee, auto, Settings.Timeout, Settings.Timeout);
         }
-
+                
         #endregion
 
         #region Properties
         private List<Car> cars = new List<Car>();
         private static List<int> carIds = new List<int>();
+        private double passiveBalance { get; set; }
+        private double activeBalance { get; set; }
 
         public List<Car> Cars { get { return cars; } }
 
@@ -36,7 +40,7 @@ namespace ParkingEmulatorTask
 
         public List<Transaction> Transactions { get; set; }
 
-        public decimal Balance { get; set; }
+        
         #endregion
 
         public void GetFreeParkingSpace()
@@ -53,111 +57,40 @@ namespace ParkingEmulatorTask
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        #region Car Addition
+        //Car Addition
         public void AddCar()
         {
-            decimal firstPayment = InputedBalanceValidation();
+            var firstPayment = Menu.InputedBalanceValidation();
 
-            CarType carType = InputedCarValidation();
+            CarType carType = Menu.InputedCarValidation();
 
             var car = new Car(firstPayment, carType);
 
             cars.Add(car);
             carIds.Add(car.Id);
             Console.WriteLine($"Vehicle {car.CarType} with Id {car.Id} was added to parking");            
-        }
-
-        private decimal InputedBalanceValidation()
-        {
-            Console.WriteLine("Input your first payment");
-            decimal firstPayment;
-            var inputValue = Console.ReadLine();
-
-            if (decimal.TryParse(inputValue, out firstPayment) && firstPayment > 0)
-            {
-                return firstPayment;
-            }
-            else
-            {
-                Console.WriteLine("You entered a wrong value!");
-                Console.WriteLine(new string('-',15));
-                return firstPayment = InputedBalanceValidation();
-            }
-        }
-
-        private CarType InputedCarValidation()
-        {
-            Console.WriteLine("Car Types:");
-
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine("1 - Passenger");
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("2 - Truck");
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("3 - Bus");
-
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("4 - Motorcycle");
-
-            Console.ForegroundColor = ConsoleColor.Gray;
-
-            Console.WriteLine("Enter your car type:");
-
-            var inputValue = Console.ReadLine()[0].ToString();
-            uint carTypeKey = 0;
-            CarType carType = CarType.Passenger;
-            if (uint.TryParse(inputValue, out carTypeKey) && (carTypeKey < 5 && carTypeKey > 0))
-            {
-                switch (carTypeKey)
-                {
-                    case 1:
-                        return CarType.Passenger;
-                    case 2:
-                        return CarType.Truck;
-                    case 3:
-                        return CarType.Bus;
-                    case 4:
-                        return CarType.Motorcycle;
-                    default:
-                        break;
-                }
-            }
-            else
-            {
-                Console.WriteLine();
-                Console.WriteLine("You entered a wrong value!");
-                Console.WriteLine(new string('-', 15));
-                return carType = InputedCarValidation();
-            }
-
-            return carType;
-        }
-        #endregion
-
-        #region Car Deletion
-
+        }        
+        
+        //Car Deletion
         public void DeleteCar(int carId)
         {
             var carDel = Cars.Where(item => item.Id == carId);
             Cars.Remove(carDel.First());
-        }
+        }               
 
-        #endregion
-
-        #region Charging fees
-
+        //Charging fees
         private void ChargeFee(object stateInfo)
         {
             foreach (var car in cars)
             {
+                
+
                 var transaction = new Transaction(car.Id, Settings.PriceSet[car.CarType]);
                 Transactions.Add(transaction);
+                
+                Console.WriteLine("Fees charged!");
             }
         }
-
-
-        #endregion
+                
     }
 }

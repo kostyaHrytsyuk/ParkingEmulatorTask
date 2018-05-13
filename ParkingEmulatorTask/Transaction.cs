@@ -8,9 +8,9 @@ namespace ParkingEmulatorTask
 
         public int CarId { get; set; }
 
-        public decimal WrittenOffMoney { get; set; }
+        public double WrittenOffMoney { get; set; }
 
-        public Transaction(int carId, decimal fee)
+        public Transaction(int carId, double fee)
         {
             CarId = carId;
             WrittenOffMoney = fee;
