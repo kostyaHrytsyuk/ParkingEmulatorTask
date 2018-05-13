@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ParkingEmulatorTask
 {
@@ -11,9 +7,7 @@ namespace ParkingEmulatorTask
         static void Main(string[] args)
         {
             Parking parking = Parking.Instance;
-
-            parking.AddCar();
-
+            
             Console.ReadKey();
         }
     }

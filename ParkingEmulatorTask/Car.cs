@@ -4,9 +4,9 @@ namespace ParkingEmulatorTask
 {
     class Car
     {
-        public int Id { get; set; }
+        public readonly int Id;
         public double Balance { get; set; }
-        public CarType CarType { get; set; }
+        public readonly CarType CarType;
 
         public Car(double firstPayment , CarType carType)
         {

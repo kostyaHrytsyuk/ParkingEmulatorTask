@@ -33,7 +33,8 @@ namespace ParkingEmulatorTask
         private static List<int> carIds = new List<int>();
         private static double passiveBalance { get; set; }
         private static double activeBalance { get; set; }
-        
+        private List<Transaction> transactions = new List<Transaction>();
+
         public static double PassiveBalance { get { return passiveBalance; } }
         public static double ActiveBalance  { get { return activeBalance;  } }
 
@@ -41,7 +42,6 @@ namespace ParkingEmulatorTask
 
         public static List<int> CarsIds { get { return carIds; } }
 
-        public List<Transaction> Transactions { get; set; } = new List<Transaction>();
 
         
         #endregion
@@ -71,7 +71,9 @@ namespace ParkingEmulatorTask
 
             cars.Add(car);
             carIds.Add(car.Id);
-            Console.WriteLine($"Vehicle {car.CarType} with Id {car.Id} was added to parking");            
+            Console.WriteLine($"Vehicle {car.CarType} with Id {car.Id} was added to parking");
+            Thread.Sleep(1500);
+            Console.Clear();            
         }        
         
         //Car Deletion
@@ -100,7 +102,7 @@ namespace ParkingEmulatorTask
                 }                
 
                 var transaction = new Transaction(car.Id, feeSize);
-                Transactions.Add(transaction);
+                transactions.Add(transaction);
 
                 Console.WriteLine("Fees charged!");
             }

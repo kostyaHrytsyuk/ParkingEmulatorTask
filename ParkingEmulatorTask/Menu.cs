@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ParkingEmulatorTask
 {
     static class Menu
     {
         #region Parking creation
-        private static bool IsCustomized { get; set; } = false;
+        private static bool IsCustomized = false;
 
         public static void ParkingCustomization()
         {

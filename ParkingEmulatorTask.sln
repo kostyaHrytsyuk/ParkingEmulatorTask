@@ -5,11 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParkingEmulatorTask", "ParkingEmulatorTask\ParkingEmulatorTask.csproj", "{475EEC46-B441-4A1E-A8DE-8562E8D811C3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{53331C76-08F8-4999-9F78-A05A61BDD416}"
-	ProjectSection(SolutionItems) = preProject
-		Transactions.log = Transactions.log
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
