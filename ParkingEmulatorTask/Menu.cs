@@ -98,6 +98,70 @@ namespace ParkingEmulatorTask
         }
         #endregion
 
+        #region Menu Navigation
+
+        public static void MenuMap()
+        {
+            Console.WriteLine("Parking functionality:");
+            Console.WriteLine("1. To add car to the parking - press A");
+            Console.WriteLine("2. To took car from the parking - press R");
+            Console.WriteLine("3. To get information about all cars on the parking - press C");
+            Console.WriteLine("4. To get information about free parking space - press S");
+            Console.WriteLine("5. To get information about parking money balance - press B");
+            Console.WriteLine("6. To get information about prices - press P");
+            Console.WriteLine("7. To exit the parking - press X");
+            Console.Write("Enter the value: ");
+            var input = Console.ReadKey().Key.ToString();
+            Console.Clear();
+            switch (input)
+            {
+                case "A":
+                    Parking.AddCar();
+                    break;
+                case "R":
+                    TakeCarFromParking();
+                    break;
+                case "C":
+                    Parking.GetAllCars();
+                    break;
+                case "S":
+                    Parking.GetFreeParkingSpace();
+                    break;
+                case "B":
+                    Parking.GetParkingBalance();
+                    break;
+                case "P":
+                    Parking.GetPrices();
+                    
+                    break;
+                default:
+                    break;
+            }
+
+            ReturnToMenu();
+
+        }
+
+        private static void ReturnToMenu()
+        {
+            Console.WriteLine("To return to main menu - press R");
+            var input = Console.ReadKey().Key.ToString();
+            Console.WriteLine();
+            if (input == "R")
+            {
+                Console.Clear();
+                MenuMap();
+            }
+            else
+            {
+                Console.WriteLine("You entered a wrong value!\t");
+                ReturnToMenu();
+            }
+        }
+                
+
+        #endregion
+
         #region Car Addition
         public static double InputedBalanceValidation()
         {
@@ -168,7 +232,27 @@ namespace ParkingEmulatorTask
         }
         #endregion
 
-        //Car Deletion
+        #region Car Deletion
+        public static void TakeCarFromParking()
+        {
+            int carId;
+            Console.WriteLine("Enter you Car Id");
+
+            var input = Console.ReadLine();
+
+            if (int.TryParse(input, out carId))
+            {
+                Parking.DeleteCar(carId);
+            }
+            else
+            {
+                Console.WriteLine("You enter a wrong value!");
+                ReturnToMenu();
+            }
+        }
+
+        
+        
         public static void CarBalanceRefilling(Car car)
         {
             Console.WriteLine($"To take car {car.Id} from parking, insert {-car.Balance}");
@@ -177,29 +261,9 @@ namespace ParkingEmulatorTask
             Parking.ActiveBalance -= fine;
             Parking.PassiveBalance += fine;            
         }
+        #endregion
 
-        public static void GetParkingBalance()
-        {
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("Parking balance\t");
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Passive balance\t");
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Active balance");
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write($"{Parking.ActiveBalance + Parking.PassiveBalance}\t\t");
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($"{Parking.PassiveBalance}\t\t");
-                        
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(Parking.ActiveBalance);
-
-            Console.ForegroundColor = ConsoleColor.Gray;
-        }
+        
 
     }
 }

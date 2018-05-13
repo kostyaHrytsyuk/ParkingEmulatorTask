@@ -29,43 +29,82 @@ namespace ParkingEmulatorTask
         #endregion
 
         #region Properties
-        private List<Car> cars = new List<Car>();
+        private static List<Car> cars = new List<Car>();
         private static List<int> carIds = new List<int>();
         private List<Transaction> transactions = new List<Transaction>();
 
         public List<Car> Cars { get { return cars; } }
         public static List<int> CarsIds { get { return carIds; } }
         public static double PassiveBalance { get; set; }
-        public static double ActiveBalance  { get; set; } 
+        public static double ActiveBalance  { get; set; }
         #endregion
 
-        public void GetFreeParkingSpace()
+        #region GetDataMethods
+        public static void GetFreeParkingSpace()
         {
-            var freeSpaces = Settings.ParkingSpace - Cars.Count;
+            var freeSpaces = Settings.ParkingSpace - cars.Count;
             Console.WriteLine("Current parking fullness:");
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Free spaces: {freeSpaces}");
 
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Booked places: {Cars.Count}");
+            Console.WriteLine($"Booked places: {cars.Count}");
 
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        public void GetAllCars()
+        public static void GetAllCars()
         {
-            Console.WriteLine("CarId\tWritten Off Money\tTransaction Time");
-
-            foreach (var car in cars)
+            if (cars.Count == 0)
             {
-                Console.WriteLine(car.Id + "\t" + car.CarType + "\t\t\t" + car.Balance.ToString("F"));
+                Console.WriteLine("There is no cars on the parking\n");
+            }
+            else
+            {
+                Console.WriteLine("CarId\tWritten Off Money\tTransaction Time");
 
-                Console.WriteLine($"{car.Id}\t");
+                foreach (var car in cars)
+                {
+                    Console.WriteLine(car.Id + "\t" + car.CarType + "\t\t\t" + car.Balance.ToString("F"));
+                }
             }
         }
-        
-        public void AddCar()
+
+        public static void GetParkingBalance()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("Parking balance\t");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("Passive balance\t");
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Active balance");
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write($"{ActiveBalance + PassiveBalance}\t\t");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"{PassiveBalance}\t\t");
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(ActiveBalance);
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        public static void GetPrices()
+        {
+            Console.WriteLine("\tPrice\tCar Type");
+            foreach (var price in Settings.PriceSet)
+            {
+                Console.WriteLine("\t" + price.Value + "\t" + price.Key);
+            }
+        }
+        #endregion
+
+        public static void AddCar()
         {
             var firstPayment = Menu.InputedBalanceValidation();
 
@@ -78,11 +117,11 @@ namespace ParkingEmulatorTask
             Console.WriteLine($"Vehicle {car.CarType} with Id {car.Id} was added to parking");
             Thread.Sleep(1500);
             Console.Clear();            
-        }        
-        
-        public void DeleteCar(int carId)
+        }
+
+        public static void DeleteCar(int carId)
         {
-            var carDel = Cars.Find(item => item.Id == carId);
+            var carDel = cars.Find(item => item.Id == carId);
 
             if (carDel == null)
             {
@@ -97,15 +136,15 @@ namespace ParkingEmulatorTask
                 }
                 else
                 {
-                    Cars.Remove(carDel);
+                    cars.Remove(carDel);
                     Console.WriteLine("Now you can take your car from the parking\nHave a nice day!");
                     Thread.Sleep(2000);
                 }
             }
 
             Console.Clear();
-        }               
-                
+        }
+
         private void ChargeFee(object stateInfo)
         {
             foreach (var car in cars)

@@ -8,8 +8,8 @@ namespace ParkingEmulatorTask
         {
             Parking parking = Parking.Instance;
 
-           
-
+            Menu.MenuMap();
+            
             Console.ReadKey();
         }
     }
