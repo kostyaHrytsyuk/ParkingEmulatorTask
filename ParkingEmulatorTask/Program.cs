@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ParkingEmulatorTask
+﻿namespace ParkingEmulatorTask
 {
     class Program
     {
@@ -8,9 +6,8 @@ namespace ParkingEmulatorTask
         {
             Parking parking = Parking.Instance;
 
-            Menu.MenuMap();
+            Menu.MenuMap(parking);
             
-            Console.ReadKey();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ParkingEmulatorTask
@@ -15,26 +16,42 @@ namespace ParkingEmulatorTask
             CarId = carId;
             WrittenOffMoney = fee;
             TransactionTime = DateTime.Now;
-            AddTransaction();
         }
 
-        private void AddTransaction()
+        public static void AddToTransactionLog(List<Transaction> transactions)
         {
-            if (isFirstTransaction)
+            try
             {
-                using (StreamWriter writer = new StreamWriter("./Transactions.log"))
+                if (isFirstTransaction)
                 {
-                    writer.WriteLine("CarId\tWritten Off Money\tTransaction Time");
+                    using (StreamWriter writer = new StreamWriter("./Transactions.log"))
+                    {
+                        writer.WriteLine("CarId\tWritten Off Money\tTransaction Time");
+                    }
+                    isFirstTransaction = false;
                 }
-                isFirstTransaction = false;
+
+                using (StreamWriter writer = new StreamWriter("./Transactions.log", true))
+                {
+                    foreach (var transaction in transactions)
+                    {
+                        writer.WriteLine(transaction.CarId + "\t" + transaction.WrittenOffMoney.ToString("F") + "\t\t\t" + transaction.TransactionTime);
+                        writer.WriteLine();
+                    }
+
+                }
             }
-
-
-            using (StreamWriter writer = new StreamWriter("./Transactions.log",true))
+            catch (FileNotFoundException)
             {
-                writer.WriteLine(CarId + "\t" + WrittenOffMoney.ToString("F") + "\t\t\t" + TransactionTime);
-                writer.WriteLine();
+                Console.WriteLine("There is no file with transactions\nContact administrator");                                
             }
+            
+            
+        }
+
+        public static string GetTransactionLog()
+        {
+            return File.ReadAllText("./Transactions.log");
         }
     }
 }
