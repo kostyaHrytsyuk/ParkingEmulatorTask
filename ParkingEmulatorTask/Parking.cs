@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
+using System.IO;
 
 namespace ParkingEmulatorTask
 {
@@ -13,151 +14,138 @@ namespace ParkingEmulatorTask
 
         public static Parking Instance { get { return lazyInstance.Value; } }
 
+        private static Timer chargingTimer;
+        private static Timer transactionLoggingTimer;
+
+
         private Parking()
         {
             Console.WriteLine("Hello!\nLet's create a parking");
             Thread.Sleep(1200);
-            Settings.ParkingCustomization();
+            Menu.ParkingCustomization();
 
             var auto = new AutoResetEvent(false);
-            TimerCallback callback = new TimerCallback(ChargeFee);
-            Timer timer = new Timer(ChargeFee, auto, Settings.Timeout, Settings.Timeout);
+            TimerCallback chargingCallback = new TimerCallback(ChargeFee);
+            TimerCallback transactionLoggingCallback = new TimerCallback(LogTransactions);
+            chargingTimer = new Timer(chargingCallback, auto, Settings.Timeout, Settings.Timeout);
+            transactionLoggingTimer = new Timer(transactionLoggingCallback, auto, Settings.LoggingInterval, Settings.LoggingInterval);
         }
-
+                
         #endregion
 
         #region Properties
-        private List<Car> cars = new List<Car>();
+        private static List<Car> cars = new List<Car>();
         private static List<int> carIds = new List<int>();
+        private List<Transaction> transactions = new List<Transaction>();
+        private double lastMinuteProfit;
 
+        public List<Transaction> LastMinuteTransactions { get; set; } = new List<Transaction>();
         public List<Car> Cars { get { return cars; } }
-
         public static List<int> CarsIds { get { return carIds; } }
-
-        public List<Transaction> Transactions { get; set; }
-
-        public decimal Balance { get; set; }
+        public double PassiveBalance { get; set; }
+        public double ActiveBalance  { get; set; }
         #endregion
 
-        public void GetFreeParkingSpace()
+        #region Data Getting Methods 
+        public void GetAllCars()
         {
-            var freeSpaces = Settings.ParkingSpace - Cars.Count;
-            Console.WriteLine("Current parking fullness:");
+            if (cars.Count == 0)
+            {
+                Console.WriteLine("There is no cars on the parking\n");
+            }
+            else
+            {
+                Console.WriteLine("CarId\tCar Type\tBalance");
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Free spaces: {freeSpaces}");
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Booked places: {Cars.Count}");
-
-            Console.ForegroundColor = ConsoleColor.Gray;
+                foreach (var car in cars)
+                {
+                    Console.WriteLine(car.Id + "\t" + car.CarType + "\t\t\t" + car.Balance.ToString("F"));
+                }
+            }
         }
+        
+        public static void GetLastMinuteProfit()
+        {
 
-        #region Car Addition
+        }
+        #endregion
+
         public void AddCar()
         {
-            decimal firstPayment = InputedBalanceValidation();
-
-            CarType carType = InputedCarValidation();
+            CarType carType = Menu.InputedCarValidation();
+                        
+            var firstPayment = Menu.InputedBalanceValidation();            
 
             var car = new Car(firstPayment, carType);
 
             cars.Add(car);
             carIds.Add(car.Id);
-            Console.WriteLine($"Vehicle {car.CarType} with Id {car.Id} was added to parking");            
+            Console.WriteLine($"Vehicle {car.CarType} with Id {car.Id} was added to parking");
+            Thread.Sleep(1500);           
         }
-
-        private decimal InputedBalanceValidation()
-        {
-            Console.WriteLine("Input your first payment");
-            decimal firstPayment;
-            var inputValue = Console.ReadLine();
-
-            if (decimal.TryParse(inputValue, out firstPayment) && firstPayment > 0)
-            {
-                return firstPayment;
-            }
-            else
-            {
-                Console.WriteLine("You entered a wrong value!");
-                Console.WriteLine(new string('-',15));
-                return firstPayment = InputedBalanceValidation();
-            }
-        }
-
-        private CarType InputedCarValidation()
-        {
-            Console.WriteLine("Car Types:");
-
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine("1 - Passenger");
-
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("2 - Truck");
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("3 - Bus");
-
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("4 - Motorcycle");
-
-            Console.ForegroundColor = ConsoleColor.Gray;
-
-            Console.WriteLine("Enter your car type:");
-
-            var inputValue = Console.ReadLine()[0].ToString();
-            uint carTypeKey = 0;
-            CarType carType = CarType.Passenger;
-            if (uint.TryParse(inputValue, out carTypeKey) && (carTypeKey < 5 && carTypeKey > 0))
-            {
-                switch (carTypeKey)
-                {
-                    case 1:
-                        return CarType.Passenger;
-                    case 2:
-                        return CarType.Truck;
-                    case 3:
-                        return CarType.Bus;
-                    case 4:
-                        return CarType.Motorcycle;
-                    default:
-                        break;
-                }
-            }
-            else
-            {
-                Console.WriteLine();
-                Console.WriteLine("You entered a wrong value!");
-                Console.WriteLine(new string('-', 15));
-                return carType = InputedCarValidation();
-            }
-
-            return carType;
-        }
-        #endregion
-
-        #region Car Deletion
 
         public void DeleteCar(int carId)
         {
-            var carDel = Cars.Where(item => item.Id == carId);
-            Cars.Remove(carDel.First());
+            var carDel = cars.Find(item => item.Id == carId);
+
+            if (carDel == null)
+            {
+                Console.WriteLine($"There is no car with such {carId} on the parking");
+            }
+            else
+            {
+                if (carDel.Balance < 0)
+                {
+                    Menu.CarBalanceRefilling(carDel, this);
+                    DeleteCar(carId);
+                }
+                else
+                {
+                    cars.Remove(carDel);
+                    Console.WriteLine("Now you can take your car from the parking\nHave a nice day!");
+                    Thread.Sleep(2000);
+                }
+            }
+                        
         }
-
-        #endregion
-
-        #region Charging fees
 
         private void ChargeFee(object stateInfo)
         {
             foreach (var car in cars)
             {
-                var transaction = new Transaction(car.Id, Settings.PriceSet[car.CarType]);
-                Transactions.Add(transaction);
+                double feeSize = Settings.PriceSet[car.CarType];
+                if (car.Balance < Settings.PriceSet[car.CarType])
+                {
+                    feeSize += feeSize*Settings.Fine;
+                    car.Balance -= feeSize;
+                    ActiveBalance += feeSize;
+                }
+                else
+                {
+                    car.Balance -= feeSize;
+                    PassiveBalance += feeSize;
+                }
+                lastMinuteProfit += feeSize;
+                var transaction = new Transaction(car.Id, feeSize);
+                transactions.Add(transaction);
+                LastMinuteTransactions.Add(transaction);
             }
+        }    
+        
+        private void LogTransactions(object stateInfo)
+        {
+            Transaction.AddToTransactionLog(LastMinuteTransactions);
+            
+            lastMinuteProfit = 0;
+            
+            LastMinuteTransactions.Clear();
         }
 
-
-        #endregion
+        public void CloseParking()
+        {
+            chargingTimer.Dispose();
+            transactionLoggingTimer.Dispose();
+            Transaction.AddToTransactionLog(LastMinuteTransactions);
+        }
     }
 }

@@ -4,11 +4,11 @@ namespace ParkingEmulatorTask
 {
     class Car
     {
-        public int Id { get; set; }
-        public decimal Balance { get; set; }
-        public CarType CarType { get; set; }
+        public readonly int Id;
+        public double Balance { get; set; }
+        public readonly CarType CarType;
 
-        public Car(decimal firstPayment , CarType carType)
+        public Car(double firstPayment , CarType carType)
         {
             Id = GenerateId();
             Balance = firstPayment;
@@ -25,6 +25,5 @@ namespace ParkingEmulatorTask
 
             return randId;
         }
-
     }
 }
