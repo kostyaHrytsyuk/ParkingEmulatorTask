@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using ParkingEmulatorLogic;
 
-namespace ParkingEmulatorTask
+namespace ParkingConsoleMenu
 {
     static class Menu
     {
         #region Parking creation & closing
         private static bool IsCustomized = false;
         private static bool IsClosed = false;
+        private static Parking _parking;
 
         public static void ParkingCustomization()
         {
@@ -42,6 +44,7 @@ namespace ParkingEmulatorTask
                         SettingsPropertiesModificator(propFirstLetter);
                         break;
                     case 'C':
+                        _parking = Parking.Instance;
                         Console.WriteLine("Parking created!");
                         break;
                     default:
@@ -100,8 +103,7 @@ namespace ParkingEmulatorTask
         #endregion
 
         #region Menu Navigation
-
-        public static void MenuMap(Parking parking)
+        public static void MenuMap()
         {
             Console.WriteLine("Parking functionality:");
             Console.WriteLine("1. To add car to the parking - press A");
@@ -119,19 +121,19 @@ namespace ParkingEmulatorTask
             switch (input)
             {
                 case "A":
-                    parking.AddCar();
+                    AddCar();
                     break;
                 case "D":
-                    TakeCarFromParking(parking);
+                    TakeCarFromParking();
                     break;
                 case "C":
-                    parking.GetAllCars();
+                    _parking.GetAllCars();
                     break;
                 case "S":
-                    GetFreeParkingSpace(parking);
+                    GetFreeParkingSpace();
                     break;
                 case "B":
-                    GetParkingBalance(parking);
+                    GetParkingBalance();
                     break;
                 case "P":
                     GetPrices();                    
@@ -140,10 +142,10 @@ namespace ParkingEmulatorTask
                     GetAllTransactions();
                     break;
                 case "L":
-                    GetLastMinuteTransactions(parking);
+                    GetLastMinuteTransactions();
                     break;
                 case "X":
-                    CloseParking(parking);
+                    CloseParking();
                     break;
                 default:
                     break;
@@ -151,12 +153,12 @@ namespace ParkingEmulatorTask
 
             if (!IsClosed)
             {
-                ReturnToMenu(parking);
+                ReturnToMenu();
             }
 
         }
 
-        public static void ReturnToMenu(Parking parking)
+        public static void ReturnToMenu()
         {
             Console.WriteLine("To return to main menu - press R");
             var input = Console.ReadKey().Key.ToString();
@@ -164,19 +166,30 @@ namespace ParkingEmulatorTask
             if (input == "R")
             {
                 Console.Clear();
-                MenuMap(parking);
+                MenuMap();
             }
             else
             {
                 Console.WriteLine("You entered a wrong value!\t");
-                ReturnToMenu(parking);
+                ReturnToMenu();
             }
         }
-                
-
         #endregion
 
         #region Car Addition
+        public static void AddCar()
+        {
+            CarType carType = InputedCarValidation();
+
+            var firstPayment = InputedBalanceValidation();
+
+            var car = new Car(firstPayment, carType);
+
+            _parking.Cars.Add(car);
+            Parking.CarsIds.Add(car.Id);
+            Console.WriteLine($"Vehicle {car.CarType} with Id {car.Id} was added to parking");
+            Thread.Sleep(1500);
+        }
         public static double InputedBalanceValidation()
         {
             Console.WriteLine("Input your payment");
@@ -247,7 +260,7 @@ namespace ParkingEmulatorTask
         #endregion
 
         #region Car Deletion
-        public static void TakeCarFromParking(Parking parking)
+        public static void TakeCarFromParking()
         {
             int carId;
             Console.WriteLine("Enter you Car Id");
@@ -256,28 +269,51 @@ namespace ParkingEmulatorTask
 
             if (int.TryParse(input, out carId))
             {
-                parking.DeleteCar(carId);
+                DeleteCar(carId);
             }
             else
             {
                 Console.WriteLine("You enter a wrong value!");
-                ReturnToMenu(parking);
+                ReturnToMenu();
             }
         }
 
-        
-        
-        public static void CarBalanceRefilling(Car car, Parking parking)
+        public static void DeleteCar(int carId)
+        {
+            var carDel = _parking.Cars.Find(item => item.Id == carId);
+
+            if (carDel == null)
+            {
+                Console.WriteLine($"There is no car with such {carId} on the parking");
+            }
+            else
+            {
+                if (carDel.Balance < 0)
+                {
+                    CarBalanceRefilling(carDel);
+                    DeleteCar(carId);
+                }
+                else
+                {
+                    _parking.Cars.Remove(carDel);
+                    Console.WriteLine("Now you can take your car from the parking\nHave a nice day!");
+                    Thread.Sleep(2000);
+                }
+            }
+
+        }      
+
+        public static void CarBalanceRefilling(Car car)
         {
             Console.WriteLine($"To take car {car.Id} from parking, insert {-car.Balance}");
             double fine = InputedBalanceValidation();
             car.Balance += fine;
-            parking.ActiveBalance -= fine;
-            parking.PassiveBalance += fine;            
+            _parking.ActiveBalance -= fine;
+            _parking.PassiveBalance += fine;            
         }
         #endregion
 
-        public static void GetParkingBalance(Parking parking)
+        public static void GetParkingBalance()
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Parking balance\t");
@@ -289,27 +325,27 @@ namespace ParkingEmulatorTask
             Console.WriteLine("Active balance");
 
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write($"{parking.ActiveBalance + parking.PassiveBalance}\t\t");
+            Console.Write($"{_parking.ActiveBalance + _parking.PassiveBalance}\t\t");
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($"{parking.PassiveBalance}\t\t");
+            Console.Write($"{_parking.PassiveBalance}\t\t");
 
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(parking.ActiveBalance);
+            Console.WriteLine(_parking.ActiveBalance);
 
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        public static void GetFreeParkingSpace(Parking parking)
+        public static void GetFreeParkingSpace()
         {
-            var freeSpaces = Settings.ParkingSpace - parking.Cars.Count;
+            var freeSpaces = Settings.ParkingSpace - _parking.Cars.Count;
             Console.WriteLine("Current parking fullness:");
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Free spaces: {freeSpaces}");
 
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Booked places: {parking.Cars.Count}");
+            Console.WriteLine($"Booked places: {_parking.Cars.Count}");
 
             Console.ForegroundColor = ConsoleColor.Gray;
         }
@@ -323,10 +359,10 @@ namespace ParkingEmulatorTask
             }
         }
 
-        public static void GetLastMinuteTransactions(Parking parking)
+        public static void GetLastMinuteTransactions()
         {
             Console.WriteLine("CarId\tWritten Off Money\tTransaction Time");
-            foreach (var transaction in parking.LastMinuteTransactions)
+            foreach (var transaction in _parking.LastMinuteTransactions)
             {
                 Console.WriteLine(transaction.CarId + "\t" + transaction.WrittenOffMoney.ToString("F") + "\t\t\t" + transaction.TransactionTime);
             }
@@ -337,11 +373,11 @@ namespace ParkingEmulatorTask
             Console.WriteLine(Transaction.GetTransactionLog());
         }
 
-        public static void CloseParking(Parking parking)
+        public static void CloseParking()
         {
             IsClosed = true;
             Console.Clear();
-            parking.CloseParking();
+            _parking.CloseParking();
             Console.WriteLine("Thank you for choosing our parking!\nHave a nice day!");
             Thread.Sleep(3000);
         }

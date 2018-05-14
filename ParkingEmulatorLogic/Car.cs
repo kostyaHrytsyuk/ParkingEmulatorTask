@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace ParkingEmulatorTask
+namespace ParkingEmulatorLogic
 {
-    class Car
+    public class Car
     {
         public readonly int Id;
         public double Balance { get; set; }

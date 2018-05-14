@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParkingEmulatorTask", "ParkingEmulatorTask\ParkingEmulatorTask.csproj", "{475EEC46-B441-4A1E-A8DE-8562E8D811C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParkingConsoleMenu", "ParkingEmulatorTask\ParkingConsoleMenu.csproj", "{475EEC46-B441-4A1E-A8DE-8562E8D811C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParkingEmulatorLogic", "ParkingEmulatorLogic\ParkingEmulatorLogic.csproj", "{92A146AF-3D43-478F-8C01-6648A2F881B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{475EEC46-B441-4A1E-A8DE-8562E8D811C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{475EEC46-B441-4A1E-A8DE-8562E8D811C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{475EEC46-B441-4A1E-A8DE-8562E8D811C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92A146AF-3D43-478F-8C01-6648A2F881B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92A146AF-3D43-478F-8C01-6648A2F881B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92A146AF-3D43-478F-8C01-6648A2F881B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92A146AF-3D43-478F-8C01-6648A2F881B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
