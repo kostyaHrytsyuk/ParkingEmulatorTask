@@ -91,15 +91,23 @@ namespace ParkingRestApi.Controllers
         }
 
         #endregion
-
-
-
+        
 
 
         // POST: api/Parking
         [HttpPost]
-        public void Post([FromBody]string value)
+        [Route("/Parking/AddCar/{carTypeKey}/{firstPayment}")]
+        public IActionResult AddCar(int carTypeKey, double firstPayment)
         {
+            if (carTypeKey < 1 || carTypeKey > 4)
+            {
+                return NotFound();
+            }
+            else
+            {
+                service.AddCar(carTypeKey, firstPayment);
+                return NoContent();
+            }
         }
         
         // PUT: api/Parking/5

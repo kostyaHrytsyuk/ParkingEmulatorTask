@@ -56,16 +56,29 @@ namespace ParkingRestApi.Services
         }
         #endregion
 
+
+        #region Get Methods With Parameters
         public IEnumerable<Transaction> GetTransactionsForTheLastMinuteByCarId(int carId)
         {
             return parking.LastMinuteTransactions.Where(car => car.CarId == carId);
         }
-
-
+        
         public bool RemoveCarFromParking(int id)
         {
             return parking.RemoveCarFromParking(id);
         }
+        #endregion
+
+        #region Post Methods
+
+        public void AddCar(int carTypeKey, double firstPayment)
+        {
+            var newCar = new Car( (CarType) carTypeKey, firstPayment);
+            parking.Cars.Add(newCar);
+        }
+
+        #endregion
+
 
     }
 }
