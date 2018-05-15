@@ -23,7 +23,10 @@ namespace ParkingRestApi.Services
             return Parking.Cars;             
         }
 
-
+        public int GetFreeSpace()
+        {
+            return Parking.FreeSpace;
+        }
 
     }
 }

@@ -10,7 +10,7 @@ using ParkingEmulatorLogic;
 namespace ParkingRestApi.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Parking")]
+    [Route("/Parking/[action]/")]
     public class ParkingController : Controller
     {
         private ParkingService service { get; set; }
@@ -26,12 +26,22 @@ namespace ParkingRestApi.Controllers
             }
         }
 
+        #region Non Parameterized Get Requests
+        
         // GET: api/Parking
-        [HttpGet]
+        [HttpGet(Name = "AllCars")]
         public List<Car> GetAllCars()
         {
             return service.GetAllCars();
         }
+
+        [HttpGet(Name ="FreeSpace")]
+        public int GetFreeSpace()
+        {
+            return service.GetFreeSpace();
+        }
+
+        #endregion
 
         // GET: api/Parking/5
         [HttpGet("{id}", Name = "Get")]
@@ -39,7 +49,7 @@ namespace ParkingRestApi.Controllers
         {
             return service.GetAllCars().Where(car => car.Id == id);
         }
-        
+
         // POST: api/Parking
         [HttpPost]
         public void Post([FromBody]string value)

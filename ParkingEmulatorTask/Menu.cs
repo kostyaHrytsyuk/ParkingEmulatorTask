@@ -338,7 +338,7 @@ namespace ParkingConsoleMenu
 
         public static void GetFreeParkingSpace()
         {
-            var freeSpaces = Settings.ParkingSpace - _parking.Cars.Count;
+            var freeSpaces = _parking.FreeSpace;
             Console.WriteLine("Current parking fullness:");
 
             Console.ForegroundColor = ConsoleColor.Green;

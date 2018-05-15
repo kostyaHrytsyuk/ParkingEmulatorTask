@@ -38,6 +38,7 @@ namespace ParkingEmulatorLogic
         public List<Transaction> LastMinuteTransactions { get; set; } = new List<Transaction>();
         public List<Car> Cars { get; set; } = new List<Car>();
         public static List<int> CarsIds { get { return carIds; } }
+        public int FreeSpace { get { return Settings.ParkingSpace - Cars.Count; } }
         public double PassiveBalance { get; set; }
         public double ActiveBalance  { get; set; }
         #endregion
