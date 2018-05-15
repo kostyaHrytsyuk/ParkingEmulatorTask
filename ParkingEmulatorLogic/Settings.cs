@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ParkingEmulatorTask
+namespace ParkingEmulatorLogic
 {
-    static class Settings
+    public static class Settings
     {
         #region Properties
         public static readonly TimeSpan LoggingInterval = new TimeSpan(0, 1, 0);

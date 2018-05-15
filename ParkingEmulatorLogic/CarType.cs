@@ -1,4 +1,4 @@
-﻿namespace ParkingEmulatorTask
+﻿namespace ParkingEmulatorLogic
 {
     public enum CarType
     {

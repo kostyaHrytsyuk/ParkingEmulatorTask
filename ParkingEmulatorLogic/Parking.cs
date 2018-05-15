@@ -4,9 +4,9 @@ using System.Threading;
 using System.Linq;
 using System.IO;
 
-namespace ParkingEmulatorTask
+namespace ParkingEmulatorLogic
 {
-    class Parking
+    public class Parking
     {
         #region Parking Creation
 
@@ -20,10 +20,6 @@ namespace ParkingEmulatorTask
 
         private Parking()
         {
-            Console.WriteLine("Hello!\nLet's create a parking");
-            Thread.Sleep(1200);
-            Menu.ParkingCustomization();
-
             var auto = new AutoResetEvent(false);
             TimerCallback chargingCallback = new TimerCallback(ChargeFee);
             TimerCallback transactionLoggingCallback = new TimerCallback(LogTransactions);
@@ -34,22 +30,24 @@ namespace ParkingEmulatorTask
         #endregion
 
         #region Properties
-        private static List<Car> cars = new List<Car>();
-        private static List<int> carIds = new List<int>();
+        private static readonly List<int> carIds = new List<int>();
         private List<Transaction> transactions = new List<Transaction>();
         private double lastMinuteProfit;
 
+
         public List<Transaction> LastMinuteTransactions { get; set; } = new List<Transaction>();
-        public List<Car> Cars { get { return cars; } }
+        public List<Car> Cars { get; set; } = new List<Car>();
         public static List<int> CarsIds { get { return carIds; } }
+        public int FreeSpace { get { return Settings.ParkingSpace - Cars.Count; } }
         public double PassiveBalance { get; set; }
         public double ActiveBalance  { get; set; }
+        public double CommonBalance  { get { return PassiveBalance + ActiveBalance; } }
         #endregion
 
         #region Data Getting Methods 
         public void GetAllCars()
         {
-            if (cars.Count == 0)
+            if (Cars.Count == 0)
             {
                 Console.WriteLine("There is no cars on the parking\n");
             }
@@ -57,7 +55,7 @@ namespace ParkingEmulatorTask
             {
                 Console.WriteLine("CarId\tCar Type\tBalance");
 
-                foreach (var car in cars)
+                foreach (var car in Cars)
                 {
                     Console.WriteLine(car.Id + "\t" + car.CarType + "\t\t\t" + car.Balance.ToString("F"));
                 }
@@ -69,49 +67,26 @@ namespace ParkingEmulatorTask
 
         }
         #endregion
-
-        public void AddCar()
+        
+        public bool RemoveCarFromParking(int carId)
         {
-            CarType carType = Menu.InputedCarValidation();
-                        
-            var firstPayment = Menu.InputedBalanceValidation();            
-
-            var car = new Car(firstPayment, carType);
-
-            cars.Add(car);
-            carIds.Add(car.Id);
-            Console.WriteLine($"Vehicle {car.CarType} with Id {car.Id} was added to parking");
-            Thread.Sleep(1500);           
-        }
-
-        public void DeleteCar(int carId)
-        {
-            var carDel = cars.Find(item => item.Id == carId);
-
+            bool isDeleted;
+            string result = string.Empty;
+            var carDel = Cars.FirstOrDefault(car => car.Id == carId);
             if (carDel == null)
             {
-                Console.WriteLine($"There is no car with such {carId} on the parking");
+                return isDeleted = false;
             }
             else
             {
-                if (carDel.Balance < 0)
-                {
-                    Menu.CarBalanceRefilling(carDel, this);
-                    DeleteCar(carId);
-                }
-                else
-                {
-                    cars.Remove(carDel);
-                    Console.WriteLine("Now you can take your car from the parking\nHave a nice day!");
-                    Thread.Sleep(2000);
-                }
+                Cars.Remove(carDel);
+                return isDeleted = true;
             }
-                        
         }
 
         private void ChargeFee(object stateInfo)
         {
-            foreach (var car in cars)
+            foreach (var car in Cars)
             {
                 double feeSize = Settings.PriceSet[car.CarType];
                 if (car.Balance < Settings.PriceSet[car.CarType])
@@ -132,6 +107,14 @@ namespace ParkingEmulatorTask
             }
         }    
         
+        public void CarBalanceRefilling(double fine, int carId)
+        {
+            var refillingCar = Cars.FirstOrDefault(car => car.Id == carId);
+            refillingCar.Balance += fine;
+            ActiveBalance -= fine;
+            PassiveBalance += fine;            
+        }
+
         private void LogTransactions(object stateInfo)
         {
             Transaction.AddToTransactionLog(LastMinuteTransactions);

@@ -1,13 +1,18 @@
-﻿namespace ParkingEmulatorTask
+﻿using System;
+using System.Threading;
+
+namespace ParkingConsoleMenu
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Parking parking = Parking.Instance;
+            Console.WriteLine("Hello!\nLet's create a parking");
+            Thread.Sleep(1200);
 
-            Menu.MenuMap(parking);
-            
+            Menu.ParkingCustomization();
+
+            Menu.MenuMap();            
         }
     }
 }

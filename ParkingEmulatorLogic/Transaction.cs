@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace ParkingEmulatorTask
+
+namespace ParkingEmulatorLogic
 {
-    class Transaction
+    public class Transaction
     {
         private static bool isFirstTransaction = true;
         public readonly DateTime TransactionTime;

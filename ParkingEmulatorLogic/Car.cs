@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace ParkingEmulatorTask
+namespace ParkingEmulatorLogic
 {
-    class Car
+    public class Car
     {
         public readonly int Id;
         public double Balance { get; set; }
         public readonly CarType CarType;
 
-        public Car(double firstPayment , CarType carType)
+        public Car(CarType carType, double firstPayment)
         {
             Id = GenerateId();
             Balance = firstPayment;
