@@ -110,10 +110,23 @@ namespace ParkingRestApi.Controllers
             }
         }
         
-        // PUT: api/Parking/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        
+        [HttpPut]
+        [Route("/Parking/AddCar/{fine}/{carId}")]
+        public IActionResult CarBalanceRefilling(double fine,int carId)
         {
+            var refillingCar = service.GetAllCars().Where(car => car.Id == carId);
+
+            if (refillingCar == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                service.CarBalanceRefilling(fine, carId);
+                return NoContent();
+            }
+            
         }
         
         // DELETE: api/ApiWithActions/5

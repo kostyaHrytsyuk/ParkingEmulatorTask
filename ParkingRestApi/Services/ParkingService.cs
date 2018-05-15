@@ -79,6 +79,10 @@ namespace ParkingRestApi.Services
 
         #endregion
 
+        public void CarBalanceRefilling(double fine, int carId)
+        {
+            parking.CarBalanceRefilling(fine, carId);
+        }
 
     }
 }

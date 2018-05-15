@@ -107,6 +107,14 @@ namespace ParkingEmulatorLogic
             }
         }    
         
+        public void CarBalanceRefilling(double fine, int carId)
+        {
+            var refillingCar = Cars.FirstOrDefault(car => car.Id == carId);
+            refillingCar.Balance += fine;
+            ActiveBalance -= fine;
+            PassiveBalance += fine;            
+        }
+
         private void LogTransactions(object stateInfo)
         {
             Transaction.AddToTransactionLog(LastMinuteTransactions);

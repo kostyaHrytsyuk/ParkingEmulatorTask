@@ -307,9 +307,7 @@ namespace ParkingConsoleMenu
         {
             Console.WriteLine($"To take car {car.Id} from parking, insert {-car.Balance}");
             double fine = InputedBalanceValidation();
-            car.Balance += fine;
-            _parking.ActiveBalance -= fine;
-            _parking.PassiveBalance += fine;            
+            _parking.CarBalanceRefilling(fine, car.Id);            
         }
         #endregion
 
