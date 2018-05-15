@@ -19,26 +19,34 @@ namespace ParkingRestApi.Controllers
         {
             this.service = service;
 
-            if (service.Parking.Cars.Count == 0)
+            if (service.parking.Cars.Count == 0)
             {
-                service.Parking.Cars.Add(new Car(20, CarType.Passenger));
-                service.Parking.Cars.Add(new Car(100, CarType.Bus));
+                service.parking.Cars.Add(new Car(20, CarType.Passenger));
+                service.parking.Cars.Add(new Car(100, CarType.Bus));
             }
         }
 
         #region Non Parameterized Get Requests
-        
-        // GET: api/Parking
-        [HttpGet(Name = "AllCars")]
+
+        // GET: Parking/GetAllCars
+        [HttpGet]
         public List<Car> GetAllCars()
         {
             return service.GetAllCars();
         }
 
-        [HttpGet(Name ="FreeSpace")]
+        // GET: Parking/GetFreeSpace
+        [HttpGet]
         public int GetFreeSpace()
         {
             return service.GetFreeSpace();
+        }
+
+        // GET: Parking/GetBookedSpace
+        [HttpGet]
+        public int GetBookedSpace()
+        {
+            return service.GetBookedSpace();
         }
 
         #endregion
@@ -66,7 +74,7 @@ namespace ParkingRestApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var isDeleted = service.Parking.RemoveCarFromParking(id);
+            var isDeleted = service.RemoveCarFromParking(id);
 
             if (!isDeleted)
             {

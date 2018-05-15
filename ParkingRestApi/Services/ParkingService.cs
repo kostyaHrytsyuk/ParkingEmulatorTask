@@ -11,21 +11,36 @@ namespace ParkingRestApi.Services
 {
     public class ParkingService
     {
-        public readonly Parking Parking;
+        public readonly Parking parking;
 
         public ParkingService()
         {
-            Parking = Parking.Instance;
+            parking = Parking.Instance;
         }
+
+        #region Get Methods Without Parameters
 
         public List<Car> GetAllCars()
         {
-            return Parking.Cars;             
+            return parking.Cars;
         }
 
         public int GetFreeSpace()
         {
-            return Parking.FreeSpace;
+            return parking.FreeSpace;
+        }
+
+        public int GetBookedSpace()
+        {
+            return parking.Cars.Count;
+        }
+
+        #endregion
+
+
+        public bool RemoveCarFromParking(int id)
+        {
+            return parking.RemoveCarFromParking(id);
         }
 
     }
