@@ -74,12 +74,27 @@ namespace ParkingRestApi.Controllers
 
         #endregion
 
-        // GET: api/Parking/5
-        [HttpGet("{id}", Name = "Get")]
-        public IEnumerable<Car> GetById(int id)
+        #region Parameterized Get Requests
+
+        // GET: /Parking/GetCarById/id?
+        [HttpGet("{id}")]
+        public IActionResult GetCarById(int id)
         {
-            return service.GetAllCars().Where(car => car.Id == id);
+            return Json(service.GetAllCars().Where(car => car.Id == id));
         }
+
+        // GET: /Parking/GetTransactionsForTheLastMinuteByCarId/id?
+        [HttpGet("{id}")]
+        public IActionResult GetTransactionsForTheLastMinuteByCarId(int id)
+        {
+            return Json(service.GetTransactionsForTheLastMinuteByCarId(id));
+        }
+
+        #endregion
+
+
+
+
 
         // POST: api/Parking
         [HttpPost]

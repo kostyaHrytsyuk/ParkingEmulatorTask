@@ -56,6 +56,11 @@ namespace ParkingRestApi.Services
         }
         #endregion
 
+        public IEnumerable<Transaction> GetTransactionsForTheLastMinuteByCarId(int carId)
+        {
+            return parking.LastMinuteTransactions.Where(car => car.CarId == carId);
+        }
+
 
         public bool RemoveCarFromParking(int id)
         {
