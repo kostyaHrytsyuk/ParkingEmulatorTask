@@ -64,6 +64,14 @@ namespace ParkingRestApi.Controllers
         {
             return Json(service.GetTransactionLog());
         }
+
+        // GET: Parking/GetTransactionsForTheLastMinute
+        [HttpGet]
+        public IActionResult GetTransactionsForTheLastMinute()
+        {
+            return Json(service.GetTransactionsForTheLastMinute());
+        }
+
         #endregion
 
         // GET: api/Parking/5

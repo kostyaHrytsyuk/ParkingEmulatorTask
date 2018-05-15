@@ -49,6 +49,11 @@ namespace ParkingRestApi.Services
         {
             return Transaction.GetTransactionLog();
         }
+
+        public List<Transaction> GetTransactionsForTheLastMinute()
+        {
+            return parking.LastMinuteTransactions;
+        }
         #endregion
 
 
