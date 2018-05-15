@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using ParkingRestApi.Services;
 
 namespace ParkingRestApi
 {
@@ -24,6 +25,7 @@ namespace ParkingRestApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddScoped<ParkingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
