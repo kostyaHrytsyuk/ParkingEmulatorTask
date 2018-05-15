@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ParkingRestApi.Services;
 using ParkingEmulatorLogic;
+using Newtonsoft.Json;
 
 namespace ParkingRestApi.Controllers
 {
@@ -31,30 +32,37 @@ namespace ParkingRestApi.Controllers
 
         // GET: Parking/GetAllCars
         [HttpGet]
-        public List<Car> GetAllCars()
+        public IActionResult GetAllCars()
         {
-            return service.GetAllCars();
+            return Json(service.GetAllCars());
         }
 
         // GET: Parking/GetFreeSpace
         [HttpGet]
-        public int GetFreeSpace()
+        public IActionResult GetFreeSpace()
         {
-            return service.GetFreeSpace();
+            return Json(service.GetFreeSpace());
         }
 
         // GET: Parking/GetBookedSpace
         [HttpGet]
-        public int GetBookedSpace()
+        public IActionResult GetBookedSpace()
         {
-            return service.GetBookedSpace();
+            return Json(service.GetBookedSpace());
         }
 
         // GET: Parking/GetCurrentProfit
         [HttpGet]
-        public Dictionary<string,double> GetCurrentProfit()
+        public IActionResult GetCurrentProfit()
         {
-            return service.GetCurrentProfit();
+            return Json(service.GetCurrentProfit());
+        }
+
+        // GET: Parking/GetTransactionLog
+        [HttpGet]
+        public IActionResult GetTransactionLog()
+        {
+            return Json(service.GetTransactionLog());
         }
         #endregion
 

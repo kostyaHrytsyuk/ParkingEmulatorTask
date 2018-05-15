@@ -45,7 +45,10 @@ namespace ParkingRestApi.Services
             };
         }
 
-
+        public string GetTransactionLog()
+        {
+            return Transaction.GetTransactionLog();
+        }
         #endregion
 
 
