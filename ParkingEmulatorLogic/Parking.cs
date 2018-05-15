@@ -41,6 +41,7 @@ namespace ParkingEmulatorLogic
         public int FreeSpace { get { return Settings.ParkingSpace - Cars.Count; } }
         public double PassiveBalance { get; set; }
         public double ActiveBalance  { get; set; }
+        public double CommonBalance  { get { return PassiveBalance + ActiveBalance; } }
         #endregion
 
         #region Data Getting Methods 

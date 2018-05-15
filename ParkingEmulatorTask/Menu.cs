@@ -133,7 +133,7 @@ namespace ParkingConsoleMenu
                     GetFreeParkingSpace();
                     break;
                 case "B":
-                    GetParkingBalance();
+                    GetCurrentProfit();
                     break;
                 case "P":
                     GetPrices();                    
@@ -183,7 +183,7 @@ namespace ParkingConsoleMenu
 
             var firstPayment = InputedBalanceValidation();
 
-            var car = new Car(firstPayment, carType);
+            var car = new Car(carType, firstPayment);
 
             _parking.Cars.Add(car);
             Parking.CarsIds.Add(car.Id);
@@ -313,7 +313,7 @@ namespace ParkingConsoleMenu
         }
         #endregion
 
-        public static void GetParkingBalance()
+        public static void GetCurrentProfit()
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Parking balance\t");
@@ -325,7 +325,7 @@ namespace ParkingConsoleMenu
             Console.WriteLine("Active balance");
 
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write($"{_parking.ActiveBalance + _parking.PassiveBalance}\t\t");
+            Console.Write($"{_parking.CommonBalance}\t\t");
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write($"{_parking.PassiveBalance}\t\t");

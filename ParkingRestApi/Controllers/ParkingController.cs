@@ -21,8 +21,9 @@ namespace ParkingRestApi.Controllers
 
             if (service.parking.Cars.Count == 0)
             {
-                service.parking.Cars.Add(new Car(20, CarType.Passenger));
-                service.parking.Cars.Add(new Car(100, CarType.Bus));
+                service.parking.Cars.Add(new Car(CarType.Passenger, 20));
+                service.parking.Cars.Add(new Car(CarType.Bus, 100));
+                service.parking.Cars.Add(new Car(CarType.Truck, 200));
             }
         }
 
@@ -49,6 +50,12 @@ namespace ParkingRestApi.Controllers
             return service.GetBookedSpace();
         }
 
+        // GET: Parking/GetCurrentProfit
+        [HttpGet]
+        public Dictionary<string,double> GetCurrentProfit()
+        {
+            return service.GetCurrentProfit();
+        }
         #endregion
 
         // GET: api/Parking/5

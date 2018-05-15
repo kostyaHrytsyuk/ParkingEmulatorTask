@@ -35,6 +35,17 @@ namespace ParkingRestApi.Services
             return parking.Cars.Count;
         }
 
+        public Dictionary<string, double> GetCurrentProfit()
+        {
+            return new Dictionary<string, double>()
+            {
+                { "Common Balance" , parking.CommonBalance  },
+                { "Active Balance" , parking.ActiveBalance  },
+                { "Passive Balance", parking.PassiveBalance }
+            };
+        }
+
+
         #endregion
 
 

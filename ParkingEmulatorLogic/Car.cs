@@ -8,7 +8,7 @@ namespace ParkingEmulatorLogic
         public double Balance { get; set; }
         public readonly CarType CarType;
 
-        public Car(double firstPayment , CarType carType)
+        public Car(CarType carType, double firstPayment)
         {
             Id = GenerateId();
             Balance = firstPayment;
