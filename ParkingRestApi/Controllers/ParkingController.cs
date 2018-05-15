@@ -54,8 +54,18 @@ namespace ParkingRestApi.Controllers
         
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var isDeleted = service.Parking.RemoveCarFromParking(id);
+
+            if (!isDeleted)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return new NoContentResult();
+            }
         }
     }
 }

@@ -30,9 +30,10 @@ namespace ParkingEmulatorLogic
         #endregion
 
         #region Properties
-        private static List<int> carIds = new List<int>();
+        private static readonly List<int> carIds = new List<int>();
         private List<Transaction> transactions = new List<Transaction>();
         private double lastMinuteProfit;
+
 
         public List<Transaction> LastMinuteTransactions { get; set; } = new List<Transaction>();
         public List<Car> Cars { get; set; } = new List<Car>();
@@ -65,6 +66,22 @@ namespace ParkingEmulatorLogic
         }
         #endregion
         
+        public bool RemoveCarFromParking(int carId)
+        {
+            bool isDeleted;
+            string result = string.Empty;
+            var carDel = Cars.FirstOrDefault(car => car.Id == carId);
+            if (carDel == null)
+            {
+                return isDeleted = false;
+            }
+            else
+            {
+                Cars.Remove(carDel);
+                return isDeleted = true;
+            }
+        }
+
         private void ChargeFee(object stateInfo)
         {
             foreach (var car in Cars)

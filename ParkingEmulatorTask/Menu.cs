@@ -295,7 +295,7 @@ namespace ParkingConsoleMenu
                 }
                 else
                 {
-                    _parking.Cars.Remove(carDel);
+                    _parking.RemoveCarFromParking(carId);
                     Console.WriteLine("Now you can take your car from the parking\nHave a nice day!");
                     Thread.Sleep(2000);
                 }
